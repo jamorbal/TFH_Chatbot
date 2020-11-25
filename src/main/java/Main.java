@@ -1,8 +1,9 @@
 import io.quarkus.runtime.annotations.QuarkusMain;
 import io.quarkus.runtime.Quarkus;
 
-import com.bbva.tinfoilhat.TestBot;
+import com.bbva.tinfoilhat.TelegramBot.TinFoilHatBot;
 
+import org.jboss.logging.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -10,20 +11,21 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 @QuarkusMain  
 public class Main {
 
-    
+    private static final Logger LOGGER = Logger.getLogger(Main.class);
 
     public static void main(final String ... args) {
-        System.out.println("Initializating Telegram Chatbot ...");
+        LOGGER.info("Initializating Telegram Chatbot ...");
 
         ApiContextInitializer.init();
         final TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
         try {
 			// Se registra el bot
-			telegramBotsApi.registerBot(new TestBot());
+            telegramBotsApi.registerBot(new TinFoilHatBot());
+
 			
 		} catch (TelegramApiException excp) {
-            System.out.println(String.format("Exception while initializating chat bot: %s", excp.getMessage()));
+            LOGGER.error("Exception while initializating TinFoilHatBot: ", excp);
 		}
 
         Quarkus.run(args); 
