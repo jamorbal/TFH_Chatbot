@@ -16,9 +16,15 @@ spec:
     spec:
       containers:
         - name: tfh-chatbot
-          image: "sockmal/tfh-chatbot:0.1.0"
+          image: "sockmal/tfh-chatbot:0.2.0"
           ports:
           - containerPort: 8080
+          env:
+          - name: ENV_URI_BASE
+            valueFrom:
+              configMapKeyRef:
+                name: tfh-chatbot-config
+                key: uriBase
           livenessProbe:
             httpGet:
               path: /
