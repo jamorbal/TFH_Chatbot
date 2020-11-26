@@ -1,4 +1,4 @@
-package com.bbva.tinfoilhat.TelegramBot;
+package com.bbva.tinfoilhat.telegrambot;
 
 import javax.validation.Valid;
 import javax.ws.rs.POST;
@@ -7,12 +7,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.inject.Inject;
+import com.bbva.tinfoilhat.constants.Constants;
 
 import com.bbva.tinfoilhat.controller.Controller;
 import com.bbva.tinfoilhat.dtos.BotMessage;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
@@ -25,41 +24,24 @@ public class TinFoilHatBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = Logger.getLogger(TinFoilHatBot.class);
 
-    @ConfigProperty(name = "tinfoilbot.token")
-    String botToken;
+    Controller controller;
 
-    @ConfigProperty(name = "tinfoilbot.name")
-    String botName;
+    public TinFoilHatBot(){}
 
-    Controller controller = new Controller();
+    public TinFoilHatBot(Controller controller ){
+        this.controller = controller;
+    }
 
     /**
      * Callback que utiliza el bot cuando recive un mensaje en el chat
      */
 	public void onUpdateReceived(final Update update) {
         LOGGER.info("TinFoilHatBot.onUpdateReceived.in");
-		// Esta función se invocará cuando nuestro bot reciba un mensaje
-        
-
-        //Message messageReceived = update.getMessage();
-		// Se obtiene el mensaje escrito por el usuario
-		final String messageTextReceived = update.getMessage().getText();
- 
-		// Se obtiene el id de chat del usuario
-		//final long chatId = update.getMessage().getChatId();
-		//if (update.getMessage().hasPhoto()) {
-		//	LOGGER.warn("Photo Received");
-		//};
- 
-        //LOGGER.info("ChatId: " + chatId);
-        //LOGGER.info("Message: " + messageTextReceived);
-		
-		// Se crea un objeto mensaje
-		//final SendMessage message = update.getMessage().hasPhoto()? new SendMessage().setChatId(chatId).setText("Metete la foto por el culo") :new SendMessage().setChatId(chatId).setText(messageTextReceived);
-		
+				
 		try {
-            // Enviamos el mensaje que genere el controlador
-            execute(controller.performAction(update.getMessage()));
+            //Enviamos los mensajes generados por el controlador
+            for (SendMessage currentMessage : controller.performAction(update.getMessage()))
+                execute(currentMessage);
             
 		} catch (final TelegramApiException excp) {
 			LOGGER.error("TinFoilHatBot.onUpdateReceived - Exception: ", excp);
@@ -69,13 +51,13 @@ public class TinFoilHatBot extends TelegramLongPollingBot {
  
     // Se devuelve el nombre que dimos al bot al crearlo con el BotFather
 	public String getBotUsername() {
-		return "EchoBot";
+		return Constants.BOT_NAME;
 	}
  
     // Se devuelve el token que nos generó el BotFather de nuestro bot
 	@Override
 	public String getBotToken() {
-		return "1457391106:AAFpLGSOF8wKO3gm3Er3P6k1Gc1qmNOSWNY";
+		return Constants.BOT_TOKEN;
     }
 
     /**
@@ -91,7 +73,7 @@ public class TinFoilHatBot extends TelegramLongPollingBot {
             
             execute(telegramMessage);
         } catch (final TelegramApiException excp){
-            LOGGER.error("TestBot.publishMessage - Exception: {}", excp);
+            LOGGER.error("TestBot.publishMessage - Exception: ", excp);
             return Response.serverError().build();
         }
         LOGGER.info("TestBot.publishMessage.out");

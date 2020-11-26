@@ -1,0 +1,10 @@
+login_as - Conectarse como usuario, uso: login_as <USER_ID>.
+log_out- Desconectarse como usuario.
+get_all_tasks - Muestra todas las tareas (no completadas).
+get_my_tasks - Muestra todas las tareas asignadas.
+assign_task - Te asignas la tarea, uso: assign_task <TASK_NAME>
+task_done - Marca una tarea como hecha, uso: task_complete <TASK_ID>.
+show_me_the_money - Te muestra cuantos TF coins tienes acumulados.
+
+
+export ENV_URI_BASE="https://tfh-ms.tinfoilrewardgame.tk"
