@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
         - name: tfh-chatbot
-          image: "sockmal/tfh-chatbot:0.2.0"
+          image: "sockmal/tfh-chatbot:0.6.0"
           ports:
-          - containerPort: 8080
+          - containerPort: 8089
           env:
           - name: ENV_URI_BASE
             valueFrom:
@@ -28,13 +28,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 8089
             initialDelaySeconds: 20
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 8089
             initialDelaySeconds: 5
             periodSeconds: 3
           resources:
@@ -55,18 +55,4 @@ spec:
   selector:
     app: tfh-chatbot
   ports:
-    - port: 8080 # Default port for image
-
----
-
-apiVersion: v1
-kind: Route
-metadata:
-  name: tfh-chatbot-service
-spec:
-  #path: /
-  port:
-    targetPort: 8080
-  to:
-    kind: Service
-    name: tfh-chatbot-service
+    - port: 8089
